@@ -104,6 +104,11 @@ function setUp () {
   spreadsheet.getCurrentCell().setValue('Slack Channel');
   spreadsheet.getRange('B8').activate();
   spreadsheet.getCurrentCell().setValue('取得間隔（分）');
+  spreadsheet.getRange('C8').setDataValidation(SpreadsheetApp.newDataValidation()
+  .setAllowInvalid(false)
+  .requireValueInList(['1', '5', '10', '15', '30'], true)
+  .build());
+  spreadsheet.getCurrentCell().setValue('5');
   spreadsheet.getRange('C3').activate();
   spreadsheet.getActiveSheet().setColumnWidth(3, 507);
   spreadsheet.getActiveSheet().setColumnWidth(2, 144);
