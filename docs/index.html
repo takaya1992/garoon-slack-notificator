@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <style>
+      body {
+        margin-top: 56px;
+      }
+    </style>
+    <title>Garoon Slack Notificator</title>
+  </head>
+  <body>
+    <header class="navbar fixed-top navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Garoon Slack Notificator</a>
+    </header>
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4">Garoon Slack Notificator</h1>
+        <p class="lead">ガルーンの予定をSlackに通知するGoogle Apps Script</p>
+      </div>
+    </div>
+    <main role="main" class="container">
+      <h1>使い方</h1>
+      <section class="mt-4">
+        <h2>新規にGoogle Spreadsheetを作成する</h2>
+        <p>Garoon Slack Notificatorは、Google Spreadsheetを設定の保存先として利用します。そのためまずはじめにGoogle Spreadsheetを新規に作成します。</p>
+        <p>自分のガルーンのID・パスワードを記載することになるので、公開範囲には気をつけてください。</p>
+      </section>
+      <section class="mt-4">
+        <h2>Google Apps Scriptを作成する</h2>
+        <p>Google Spreadsheetのメニュー <code>ツール &gt; スクリプトエディタ</code> からGoogle Apps Scriptのスクリプトエディタを開きます。</p>
+        <p><a href="https://github.com/takaya1992/garoon-slack-notificator/blob/master/code.gs" target="_blank">GitHubに公開しているコード</a>をスクリプトエディタへコピペします。</p>
+      </section>
+      <section class="mt-4">
+        <h2>設定</h2>
+        <p>最初に作成したGoogle SpreadsheetにガルーンのIDやパスワード、SlackのWebhook URLなどの設定を記載します。</p>
+        <p>
+          用意したスクリプトを実行することでその設定表をGoogle Spreadsheet上に作成できます。
+          スクリプトエディタのメニュー <code>実行 &gt; 関数を実行 &gt; setUp</code> を選択することで、<code>setUp</code>関数を実行できます。関数を実行し、Google Spreadsheetに戻ると「設定」シートが作成されているはずです。
+        </p>
+        <p>「設定」シートに、下記の設定項目を記入します。</p>
+
+        <table class="table table-striped mt-2">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>設定値</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>ガルーン サブドメイン</th>
+              <td>ガルーンのサブドメインを記入します。例えば、ガルーンのURLが <code>example.cybozu.com</code> であれば、 <code>example</code> の部分がサブドメインとなります。 </td>
+            </tr>
+            <tr>
+              <th>ガルーン ID</th>
+              <td>ガルーンのIDを記入します。</td>
+            </tr>
+            <tr>
+              <th>ガルーン パスワード</th>
+              <td>ガルーンのパスワードを記入します。念のため、白の文字色にしておりカーソルを合わせない限りはパスワードが表示されないようになっていますが、ただの目隠しですので、このSpreadsheetの公開範囲にはお気をつけください。</td>
+            </tr>
+            <tr>
+              <th>Slack WebhookURL</th>
+              <td>SlackのIncoming Webhook URLを指定します。</td>
+            </tr>
+            <tr>
+              <th>Slack Channel</th>
+              <td>非公開予定も通知されるようになるので、自分のユーザ名を指定することをおすすめします。</td>
+            </tr>
+            <tr>
+              <th>取得間隔（分）</th>
+              <td> 何分前に通知をするかを分で指定します。（<code>1</code>, <code>5</code>, <code>10</code>, <code>15</code>, <code>30</code>から選択します。）</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="mt-4">
+        <h2>タイマーを設定する</h2>
+        <p>スクリプトを定期的に実行するためにタイマーを設定します。</p>
+        <p>スクリプトエディタのメニュー <code>編集 &gt; 現在のプロジェクトのトリガー</code> を選択します。</p>
+        <p>「トリガーが設定されていません。今すぐ追加するにはここをクリックしてください。」をクリックします。</p>
+        <p>「実行」は「main」を選択し、「イベント」は「時間主導型」「分タイマー」を選択します。選択する分数は前述した「取得間隔」に設定した値を設定します。</p>
+        <div class="card m-4">
+          <div class="card-body">
+            <h5 class="card-title">TIPS</h5>
+            <p class="card-text">
+              一番右の「通知」リンクをクリックし、実行失敗時にメールで通知できるようにしておくと設定ミスなどに気付けるので設定しておくことをおすすめします。<br>
+            「通知」をクリック後、通知方法を選択します（基本的に「（Google Appsのメールアドレス）メール経由」しか選択できないはずです）。通知タイミングは「今すぐ」を選択します。最後にOKをクリックし、通知の設定を完了します。
+            </p>
+          </div>
+        </div>
+        <p>最後にタイマーの設定を保存するために、「保存」ボタンをクリックしますが、クリックするのはタイミングを見計らいます。</p>
+        <p>例えば、5分ごとの実行を8:03に設定すると、次回の実行はその5分後の8:08となってしまい、中途半端な時間に実行されることとなってしまいます。そのため、5分ごとの設定の場合は、8:00や8:05、8:10などのちょうどいいタイミングを見計らう必要があります。</p>
+      </section>
+    </main>
+  </body>
+</html>
